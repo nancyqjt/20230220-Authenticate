@@ -6,7 +6,8 @@ class SessionsController < ApplicationController
     def create
         @user = User.find_by({"email" => params["email"]})
         if @user
-            if @user["password"] == params["password"]
+            if BCrypt::Password.new(@user["password"]) == params["password"]
+                session["user_id"] = @user["id"]
                 flash["notice"] = "You logged in!"
                 redirect_to "/companies"
             else
